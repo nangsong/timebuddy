@@ -34,7 +34,8 @@ export function ClockFace({ size, showNumbers = true }: ClockFaceProps) {
     return { hour, x, y };
   });
 
-  const fontSize = size * 0.088;
+  // Slightly larger font at small sizes so numbers stay readable (e.g. 120px match clocks)
+  const fontSize = size < 150 ? size * 0.105 : size * 0.088;
 
   return (
     <g>

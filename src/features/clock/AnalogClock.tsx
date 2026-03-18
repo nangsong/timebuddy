@@ -65,11 +65,47 @@ export function AnalogClock({
   const displayMinuteAngle = interactive ? interactiveMinuteAngle : minuteAngle(minute);
   const displaySecondAngle = second !== undefined ? secondAngle(second) : null;
 
-  // Hand dimensions
-  const hourLen = r * 0.55;
-  const minuteLen = r * 0.78;
-  const hourWidth = size * 0.048;
-  const minuteWidth = size * 0.032;
+  // ── Arrow hand path builder ──────────────────────────────────────────
+  // Arrow shape pointing UP (toward 12 o'clock) at 0°.
+  // Origin at (cx, cy). Rotation applied by parent motion.g.
+  //
+  //          tip (cx, cy-len)
+  //           /\
+  //          /  \          ← arrowhead
+  // (cx-aw, cy-ab)  (cx+aw, cy-ab)
+  //      |  shaft  |
+  // (cx-sw, cy+tail)  (cx+sw, cy+tail)  ← counterweight
+  //
+  function arrowHandPath(len: number, tail: number, sw: number, aw: number, ab: number): string {
+    return [
+      `M ${cx - sw} ${cy + tail}`,
+      `L ${cx - sw} ${cy - ab}`,
+      `L ${cx - aw} ${cy - ab}`,
+      `L ${cx}      ${cy - len}`,
+      `L ${cx + aw} ${cy - ab}`,
+      `L ${cx + sw} ${cy - ab}`,
+      `L ${cx + sw} ${cy + tail}`,
+      "Z",
+    ].join(" ");
+  }
+
+  // Hour hand — short, thick, wide arrowhead
+  const hourHandPath = arrowHandPath(
+    r * 0.56,     // tip length from center
+    r * 0.14,     // counterweight tail
+    size * 0.030, // shaft half-width
+    size * 0.052, // arrowhead half-width
+    r * 0.38      // where arrowhead starts
+  );
+
+  // Minute hand — long, slimmer shaft, narrower arrowhead
+  const minuteHandPath = arrowHandPath(
+    r * 0.82,     // tip length — significantly longer
+    r * 0.17,     // counterweight tail
+    size * 0.018, // shaft half-width (thinner than hour)
+    size * 0.034, // arrowhead half-width
+    r * 0.60      // arrowhead starts further out
+  );
 
   function getAngleFromPointer(e: React.PointerEvent): number {
     if (!svgRef.current) return 0;
@@ -119,11 +155,6 @@ export function AnalogClock({
     dragging.current = null;
   }, []);
 
-  function handPath(length: number, width: number): string {
-    const hw = width / 2;
-    return `M ${cx - hw * 0.6} ${cy + length * 0.2} L ${cx - hw * 0.3} ${cy - length} L ${cx + hw * 0.3} ${cy - length} L ${cx + hw * 0.6} ${cy + length * 0.2} Z`;
-  }
-
   const hourOpacity = highlightHand === "minute" ? 0.3 : 1;
   const minuteOpacity = highlightHand === "hour" ? 0.3 : 1;
   const hourColor =
@@ -168,9 +199,9 @@ export function AnalogClock({
         onPointerDown={handlePointerDown("hour")}
       >
         <path
-          d={handPath(hourLen, hourWidth)}
+          d={hourHandPath}
           fill={hourColor}
-          style={{ filter: highlightHand === "hour" || pulseHand === "hour" ? "drop-shadow(0 0 6px var(--highlight-hand))" : undefined }}
+          style={{ filter: highlightHand === "hour" || pulseHand === "hour" ? "drop-shadow(0 0 8px var(--highlight-hand))" : undefined }}
         />
       </motion.g>
 
@@ -193,9 +224,9 @@ export function AnalogClock({
         onPointerDown={handlePointerDown("minute")}
       >
         <path
-          d={handPath(minuteLen, minuteWidth)}
+          d={minuteHandPath}
           fill={minuteColor}
-          style={{ filter: highlightHand === "minute" || pulseHand === "minute" ? "drop-shadow(0 0 6px var(--highlight-hand))" : undefined }}
+          style={{ filter: highlightHand === "minute" || pulseHand === "minute" ? "drop-shadow(0 0 8px var(--highlight-hand))" : undefined }}
         />
       </motion.g>
 

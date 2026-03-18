@@ -89,7 +89,6 @@ export function MatchTheClockExercise({ exercise, level, onAnswer }: Props) {
               hour={opt.hour}
               minute={opt.minute}
               size={120}
-              showNumbers={false}
             />
           </button>
         ))}
