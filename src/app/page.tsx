@@ -1,65 +1,110 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { motion } from "framer-motion";
+import { AppShell } from "@/components/AppShell";
+import { AnalogClock } from "@/features/clock/AnalogClock";
+import { useProgress } from "@/hooks/useProgress";
+import { BookOpen, Dumbbell, Star } from "lucide-react";
+
+export default function HomePage() {
+  const router = useRouter();
+  const { progress } = useProgress();
+  const [currentTime, setCurrentTime] = useState({ hour: 12, minute: 0, second: 0 });
+
+  // Live clock on home page
+  useEffect(() => {
+    const update = () => {
+      const now = new Date();
+      let hour = now.getHours() % 12;
+      if (hour === 0) hour = 12;
+      setCurrentTime({ hour, minute: now.getMinutes(), second: now.getSeconds() });
+    };
+    update();
+    const id = setInterval(update, 1000);
+    return () => clearInterval(id);
+  }, []);
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
+    <AppShell>
+      <div className="flex flex-col items-center gap-8 py-4 text-center">
+        {/* Hero */}
+        <motion.div
+          className="flex flex-col items-center gap-3"
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          <h1 className="text-4xl font-black text-gray-800 leading-tight">
+            Learn to Read<br />
+            <span className="text-purple-600">the Clock!</span>
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+          <p className="text-base font-semibold text-gray-500 max-w-xs">
+            Fun exercises to help you tell time like a pro!
           </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+        </motion.div>
+
+        {/* Live clock */}
+        <motion.div
+          initial={{ scale: 0.8, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ type: "spring", stiffness: 150, damping: 18, delay: 0.2 }}
+          className="drop-shadow-lg"
+        >
+          <AnalogClock
+            hour={currentTime.hour}
+            minute={currentTime.minute}
+            second={currentTime.second}
+            size={240}
+          />
+        </motion.div>
+
+        {/* Stars earned */}
+        {progress.totalStars > 0 && (
+          <motion.div
+            className="flex items-center gap-2 bg-yellow-50 border-2 border-yellow-200 rounded-2xl px-5 py-3"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+            <Star className="w-5 h-5 fill-yellow-400 text-yellow-400" />
+            <span className="font-black text-yellow-700">
+              {progress.totalStars} star{progress.totalStars !== 1 ? "s" : ""} earned!
+            </span>
+          </motion.div>
+        )}
+
+        {/* Action buttons */}
+        <motion.div
+          className="flex flex-col gap-4 w-full max-w-xs"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.35 }}
+        >
+          <button
+            onClick={() => router.push("/learn")}
+            className="flex items-center justify-center gap-3 bg-purple-500 text-white rounded-2xl px-6 py-5 text-xl font-black hover:bg-purple-600 hover:scale-105 active:scale-95 transition-all shadow-lg shadow-purple-200"
           >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+            <BookOpen className="w-6 h-6" />
+            Let&apos;s Learn! 📖
+          </button>
+
+          <button
+            onClick={() => router.push("/practice")}
+            className="flex items-center justify-center gap-3 bg-green-500 text-white rounded-2xl px-6 py-5 text-xl font-black hover:bg-green-600 hover:scale-105 active:scale-95 transition-all shadow-lg shadow-green-200"
+          >
+            <Dumbbell className="w-6 h-6" />
+            Let&apos;s Practice! 💪
+          </button>
+        </motion.div>
+
+        {/* Progress info */}
+        {progress.sessionsCompleted > 0 && (
+          <p className="text-sm font-semibold text-gray-400">
+            Sessions completed: {progress.sessionsCompleted} · Level {progress.level}
+          </p>
+        )}
+      </div>
+    </AppShell>
   );
 }
