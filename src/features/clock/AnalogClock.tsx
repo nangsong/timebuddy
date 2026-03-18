@@ -89,22 +89,22 @@ export function AnalogClock({
     ].join(" ");
   }
 
-  // Hour hand — short, thick, wide arrowhead
+  // Hour hand — short, FAT, huge arrowhead (bright red → easy to identify)
   const hourHandPath = arrowHandPath(
-    r * 0.56,     // tip length from center
-    r * 0.14,     // counterweight tail
-    size * 0.030, // shaft half-width
-    size * 0.052, // arrowhead half-width
-    r * 0.38      // where arrowhead starts
+    r * 0.53,     // tip length from center (short)
+    r * 0.15,     // counterweight tail
+    size * 0.044, // shaft half-width — chunky
+    size * 0.072, // arrowhead half-width — very wide flare
+    r * 0.28      // where arrowhead starts — early, making a dramatic triangle
   );
 
-  // Minute hand — long, slimmer shaft, narrower arrowhead
+  // Minute hand — long, medium shaft, clear arrowhead (royal blue → clearly different)
   const minuteHandPath = arrowHandPath(
-    r * 0.82,     // tip length — significantly longer
-    r * 0.17,     // counterweight tail
-    size * 0.018, // shaft half-width (thinner than hour)
-    size * 0.034, // arrowhead half-width
-    r * 0.60      // arrowhead starts further out
+    r * 0.83,     // tip length — noticeably longer than hour
+    r * 0.18,     // counterweight tail
+    size * 0.028, // shaft half-width — slimmer than hour
+    size * 0.052, // arrowhead half-width
+    r * 0.58      // arrowhead starts further out
   );
 
   function getAngleFromPointer(e: React.PointerEvent): number {
@@ -198,9 +198,12 @@ export function AnalogClock({
         opacity={hourOpacity}
         onPointerDown={handlePointerDown("hour")}
       >
+        {/* White outline so the hand pops off the clock face */}
+        <path d={hourHandPath} fill="white" stroke="white" strokeWidth={size * 0.022} strokeLinejoin="round" />
         <path
           d={hourHandPath}
           fill={hourColor}
+          strokeLinejoin="round"
           style={{ filter: highlightHand === "hour" || pulseHand === "hour" ? "drop-shadow(0 0 8px var(--highlight-hand))" : undefined }}
         />
       </motion.g>
@@ -223,9 +226,12 @@ export function AnalogClock({
         opacity={minuteOpacity}
         onPointerDown={handlePointerDown("minute")}
       >
+        {/* White outline so the hand pops off the clock face */}
+        <path d={minuteHandPath} fill="white" stroke="white" strokeWidth={size * 0.018} strokeLinejoin="round" />
         <path
           d={minuteHandPath}
           fill={minuteColor}
+          strokeLinejoin="round"
           style={{ filter: highlightHand === "minute" || pulseHand === "minute" ? "drop-shadow(0 0 8px var(--highlight-hand))" : undefined }}
         />
       </motion.g>

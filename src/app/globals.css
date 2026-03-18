@@ -63,14 +63,14 @@
   /* Clock-specific tokens */
   --clock-face: oklch(0.99 0.004 75);
   --clock-border: oklch(0.25 0.06 265);
-  /* Hour hand: deep navy — short, thick, unmistakable */
-  --hour-hand: oklch(0.22 0.14 265);
-  /* Minute hand: vivid green — long, clearly different color */
-  --minute-hand: oklch(0.44 0.24 155);
-  --second-hand: oklch(0.58 0.26 30);
+  /* Hour hand: BRIGHT RED — short, fat, impossible to miss */
+  --hour-hand: oklch(0.55 0.24 22);
+  /* Minute hand: ROYAL BLUE — long, clearly a different color */
+  --minute-hand: oklch(0.48 0.22 255);
+  --second-hand: oklch(0.62 0.26 30);
   --tick-major: oklch(0.28 0.08 265);
   --tick-minor: oklch(0.75 0.02 265);
-  --highlight-hand: oklch(0.62 0.22 50);
+  --highlight-hand: oklch(0.65 0.22 50);
 }
 
 /* Shake animation for wrong answers */
