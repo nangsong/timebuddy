@@ -89,22 +89,22 @@ export function AnalogClock({
     ].join(" ");
   }
 
-  // Hour hand — short, FAT, huge arrowhead (bright red → easy to identify)
+  // Hour hand — short, fat shaft, small arrowhead at tip (bright red → easy to identify)
   const hourHandPath = arrowHandPath(
     r * 0.53,     // tip length from center (short)
     r * 0.15,     // counterweight tail
     size * 0.044, // shaft half-width — chunky
-    size * 0.072, // arrowhead half-width — very wide flare
-    r * 0.28      // where arrowhead starts — early, making a dramatic triangle
+    size * 0.060, // arrowhead half-width — narrower flare for sharp point
+    r * 0.42      // arrowhead starts near tip — clear shaft + small pointed tip
   );
 
-  // Minute hand — long, medium shaft, clear arrowhead (royal blue → clearly different)
+  // Minute hand — long, slimmer shaft, small arrowhead at tip (royal blue → clearly different)
   const minuteHandPath = arrowHandPath(
     r * 0.83,     // tip length — noticeably longer than hour
     r * 0.18,     // counterweight tail
     size * 0.028, // shaft half-width — slimmer than hour
-    size * 0.052, // arrowhead half-width
-    r * 0.58      // arrowhead starts further out
+    size * 0.044, // arrowhead half-width — narrower flare
+    r * 0.68      // arrowhead starts near tip — long clear shaft + small pointed tip
   );
 
   function getAngleFromPointer(e: React.PointerEvent): number {
